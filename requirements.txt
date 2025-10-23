@@ -1,0 +1,15 @@
+fastapi
+uvicorn
+python-dotenv
+pydantic
+email-validator
+motor
+passlib[bcrypt]
+python-jose[cryptography]
+redis
+transformers
+torch
+authlib
+starlette
+google-generativeai
+bson
