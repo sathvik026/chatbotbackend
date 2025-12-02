@@ -65,3 +65,26 @@ copy link forwarding http to .dev
 in payload setting on repository copiedlink/gitHub- webhook/
 save 
 ngrok ok 200
+++++++++++++++++++++++++++++
+Open docker
+Sign in
+Create folder docker example
+Add .js file in it
+Create dockerfile
+FROM node:16-alpine
+WORKDIR /app
+COPY calculayor.js /app
+CMD ["node","calculator.js"]
+open powershell
+docker build -t simple .
+docker run simple
+docker run ps
+docker login
+docker tag simple user/simple
+Check in docker
+Docker push user/simple
+docker ps
+Docker rm id
+docker rmi user/simple
+docker pull user/simple
+docker run
