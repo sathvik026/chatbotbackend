@@ -13,3 +13,4 @@ authlib
 starlette
 google-generativeai
 bson
+https://github.com/blue9official/WebDemo
