@@ -1,148 +1,196 @@
-fastapi
-uvicorn
-python-dotenv
-pydantic
-email-validator
-motor
-passlib[bcrypt]
-python-jose[cryptography]
-redis
-transformers
-torch
-authlib
-starlette
-google-generativeai
-bson
-https://github.com/blue9official/WebDemo
-=============================
-open jenkine free style (build)
-git(maven)
-master or main
-build steps - invoke top level maven targets -mavena_home-clean
-build steps - invoke top level maven targets -maven-home-install
-post build - archive the archi types -/*
-post build - build other projects sample-test
-dash board
-new item
-sampletest
-no git
-delete workspace
-build steps - copy arcti facts -sample build __ whayt to copy -/*
-add build -invole top level - test 
-post build - archive the artifacts -- */
-apply save
-+ = Sathvik
-samplebuild
-+++++++++++++++++++++++++++++
-sudo apt update
-sudo apt-get install docker.io -y
-sudo apt install git -y
-sudo apt install nano -y
-Example/index.html.
-Git bash. 
-Git init
-.. 
-Aws git repo. 
-Git remote. 
+Prerequisites:
 
-Http:code.
-git clone <https://github.com/Guglothmahipal/AWS-Lab-Practice.git>
-cd <folder>
-ls
-nano Dockerfile
-FROM nginx:latest
-COPY . /usr/share/nginx/html
-sudo docker build -t mywebapp .
-sudo docker run -d -p 80:80 mywebapp
-+++++++++++++++++++++++++++
-open Jenkins
-new item
-git link  any link
-GitHub hook trigger 
-build steps --invoke top level -clean install 
-ngrok http 8080
-copy link forwarding http to .dev
-in payload setting on repository copiedlink/gitHub- webhook/
-save 
-ngrok ok 200
-++++++++++++++++++++++++++++
-Open docker
-Sign in
-Create folder docker example
-Add .js file in it
-Create dockerfile
-FROM node:16-alpine
-WORKDIR /app
-COPY calculayor.js /app
-CMD ["node","calculator.js"]
-open powershell
-docker build -t simple .
-docker run simple
-docker run ps
-docker login
-docker tag simple user/simple
-Check in docker
-Docker push user/simple
-docker ps
-Docker rm id
-docker rmi user/simple
-docker pull user/simple
-docker run
-+++++++++++++++++++++++++
-Desktop->compose ane file
-Dockercompose.yaml
-Add file
-version: '3'
+Kubernetes cluster running (EKS, GKE, or a local cluster like Minikube or K3s).
 
-services:
-  # Database
-  db:
-    image: mysql:5.7
-    volumes:
-      - db_data:/var/lib/mysql
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: wordpress
-      MYSQL_USER: wordpress
-      MYSQL_PASSWORD: wordpress
-    networks:
-      - wpsite
-  # phpmyadmin
-  phpmyadmin:
-    depends_on:
-      - db
-    image: phpmyadmin/phpmyadmin
-    restart: always
-    ports:
-      - '8080:80'
-    environment:
-      PMA_HOST: db
-      MYSQL_ROOT_PASSWORD: password 
-    networks:
-      - wpsite
-  # Wordpress
-  wordpress:
-    depends_on:
-      - db
-    image: wordpress:latest
-    ports:
-      - '8000:80'
-    restart: always
-    volumes: ['./:/var/www/html']
-    environment:
-      WORDPRESS_DB_HOST: db:3306
-      WORDPRESS_DB_USER: wordpress
-      WORDPRESS_DB_PASSWORD: wordpress
-    networks:
-      - wpsite
-networks:
-  wpsite:
-volumes:
-  db_data:
-Open docker hub
-Mysql
-Open cmd
-Docker-compose up -d
-Open chrome localhost8080
-Docker ps
+kubectl configured to interact with the cluster.
+
+Persistent Volume support for stateful data.
+
+Docker installed for containerization.
+
+Step 1: Create a Persistent Volume (PV) and Persistent Volume Claim (PVC)
+
+MySQL requires persistent storage to retain data. You need to create a PersistentVolume (PV) and PersistentVolumeClaim (PVC).
+
+Persistent Volume (PV) YAML:
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mysql-pv
+spec:
+  capacity:
+    storage: 5Gi  # Adjust based on your needs
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: standard
+  hostPath:  # For local cluster, you can use hostPath
+    path: "/mnt/data/mysql"
+
+Persistent Volume Claim (PVC) YAML:
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: standard
+  resources:
+    requests:
+      storage: 5Gi  # Match this with PV capacity
+
+
+Run the commands to apply the PV and PVC:
+
+kubectl apply -f pv.yaml
+kubectl apply -f pvc.yaml
+
+Step 2: Create MySQL Deployment YAML
+
+To create the MySQL container, we use a StatefulSet instead of a Deployment for ensuring persistence and scalability.
+
+MySQL StatefulSet YAML:
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql
+spec:
+  serviceName: "mysql"
+  replicas: 1  # Initially one replica
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:5.7
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: mysql-password
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - name: mysql-storage
+              mountPath: /var/lib/mysql
+  volumeClaimTemplates:
+    - metadata:
+        name: mysql-storage
+      spec:
+        accessModes: [ReadWriteOnce]
+        resources:
+          requests:
+            storage: 5Gi
+
+
+This will create a stateful MySQL instance with persistent storage. You can modify the number of replicas based on scaling needs (e.g., replicas: 3 for horizontal scaling).
+
+Run the command:
+
+kubectl apply -f mysql-statefulset.yaml
+
+Step 3: Create a Secret for MySQL Root Password
+
+To avoid exposing your password in plain text, you should create a Kubernetes Secret.
+
+kubectl create secret generic mysql-secret --from-literal=mysql-password=<your-password>
+
+
+This step is required to configure the root password for MySQL.
+
+Step 4: Expose MySQL via Service
+
+Create a Service to expose MySQL to other applications within the cluster.
+
+MySQL Service YAML:
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+spec:
+  ports:
+    - port: 3306
+  clusterIP: None  # Headless service for StatefulSets
+  selector:
+    app: mysql
+
+
+Run the command:
+
+kubectl apply -f mysql-service.yaml
+
+Step 5: Horizontal Scaling
+
+You can scale MySQL by increasing the number of replicas in the StatefulSet. If you want to scale to 3 replicas, modify the replicas value:
+
+replicas: 3
+
+
+Then apply the changes:
+
+kubectl apply -f mysql-statefulset.yaml
+
+
+To manually scale the StatefulSet:
+
+kubectl scale statefulset mysql --replicas=3
+
+Step 6: Verify MySQL Pods and Scaling
+
+Check the status of the pods and ensure that the replicas are running:
+
+kubectl get pods -l app=mysql
+
+
+Check the state of the service:
+
+kubectl get svc mysql
+
+
+You should see multiple MySQL pods if scaling is successful.
+
+Step 7: Check MySQL Connectivity
+
+You can test the connectivity by accessing the MySQL pod. Run the following:
+
+kubectl exec -it <mysql-pod-name> -- mysql -u root -p
+
+Step 8: Enable Vertical Scaling (Optional)
+
+If you need to scale vertically (increase CPU/memory), modify the resources in the StatefulSet:
+
+resources:
+  requests:
+    memory: "1Gi"
+    cpu: "500m"
+  limits:
+    memory: "2Gi"
+    cpu: "1"
+
+
+Then apply the updated configuration:
+
+kubectl apply -f mysql-statefulset.yaml
+
+Step 9: Monitoring and Logs
+
+Use tools like Prometheus or Datadog to monitor the scaling performance of MySQL. Also, you can view the logs for troubleshooting:
+
+kubectl logs <mysql-pod-name>
+
+Step 10: Cleanup (Optional)
+
+To delete all resources created:
+
+kubectl delete -f mysql-statefulset.yaml
+kubectl delete -f mysql-service.yaml
+kubectl delete -f pv.yaml
+kubectl delete -f pvc.yaml
+kubectl delete secret mysql-secret
