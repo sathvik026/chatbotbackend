@@ -14,3 +14,54 @@ starlette
 google-generativeai
 bson
 https://github.com/blue9official/WebDemo
+=============================
+open jenkine free style (build)
+git(maven)
+master or main
+build steps - invoke top level maven targets -mavena_home-clean
+build steps - invoke top level maven targets -maven-home-install
+post build - archive the archi types -/*
+post build - build other projects sample-test
+dash board
+new item
+sampletest
+no git
+delete workspace
+build steps - copy arcti facts -sample build __ whayt to copy -/*
+add build -invole top level - test 
+post build - archive the artifacts -- */
+apply save
++ = Sathvik
+samplebuild
++++++++++++++++++++++++++++++
+sudo apt update
+sudo apt-get install docker.io -y
+sudo apt install git -y
+sudo apt install nano -y
+Example/index.html.
+Git bash. 
+Git init
+.. 
+Aws git repo. 
+Git remote. 
+
+Http:code.
+git clone <https://github.com/Guglothmahipal/AWS-Lab-Practice.git>
+cd <folder>
+ls
+nano Dockerfile
+FROM nginx:latest
+COPY . /usr/share/nginx/html
+sudo docker build -t mywebapp .
+sudo docker run -d -p 80:80 mywebapp
++++++++++++++++++++++++++++
+open Jenkins
+new item
+git link  any link
+GitHub hook trigger 
+build steps --invoke top level -clean install 
+ngrok http 8080
+copy link forwarding http to .dev
+in payload setting on repository copiedlink/gitHub- webhook/
+save 
+ngrok ok 200
