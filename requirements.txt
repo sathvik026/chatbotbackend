@@ -1,1 +1,128 @@
+aws:
+sudo apt update
+sudo apt-get install docker.io -y
+sudo apt install git -y
+sudo apt install nano -y
+git clone <your_github_url>
+cd <folder>
+ls
+nano Dockerfile
+FROM nginx:latest
+COPY . /usr/share/nginx/html
+sudo docker build -t mywebapp .
+sudo docker run -d -p 80:80 mywebapp
++---+++++++++++
+Web hook 
+open Jenkins
+new item
+git link  any link
+GitHub hook trigger 
+build steps --invoke top level -clean install 
+ngrok http 8080
+copy link forwarding http to .dev
+in payload setting on repository copiedlink/gitHub- webhook/
+save 
+ngrok ok 200 check in ngork
++++++++++++++++++++
+free style: pipeline
+open jenkine free style (build)
+git(maven)
+master or main
+build steps - invoke top level maven targets -mavena_home-clean
+build steps - invoke top level maven targets -maven-home-install
+post build - archive the archi types -**/*
+post build - build other projects sample-test
+dash board
+new item
+sampletest
+no git
+delete workspace
+build steps - copy arcti facts -sample build __ whayt to copy -**/*
+add build -invole top level - test 
+post build - archive the artifacts -- **/*
+apply save
++ = Sathvik
+samplebuild
+++++++++++++++
+docker compose
+Desktop->compose ane file
+Dockercompose.yaml
+in file . yaml=>version: '3'
 
+services:
+  # Database
+  db:
+    image: mysql:5.7
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+    networks:
+      - wpsite
+  # phpmyadmin
+  phpmyadmin:
+    depends_on:
+      - db
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - '8080:80'
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: password 
+    networks:
+      - wpsite
+  # Wordpress
+  wordpress:
+    depends_on:
+      - db
+    image: wordpress:latest
+    ports:
+      - '8000:80'
+    restart: always
+    volumes: ['./:/var/www/html']
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+    networks:
+      - wpsite
+networks:
+  wpsite:
+volumes:
+  db_data:
+Add file
+Open docker hub
+search Mysql
+Open cmd from file
+Docker-compose up -d
+Open chrome localhost8080
+Docker ps
++++++++++++++++7
+docker container 
+Open docker
+Sign in
+Create folder docker example
+Add .js file in it
+Create dockerfile
+FROM node:16-alpine
+WORKDIR /app
+COPY calculayor.js /app
+CMD ["node","calculator.js"]
+open powershell
+docker build -t simple .
+docker run simple
+docker run ps
+docker login
+docker tag simple user/simple
+Check in docker
+Docker push user/simple
+docker ps
+Docker rm id
+docker rmi user/simple
+docker pull user/simple
+docker run
